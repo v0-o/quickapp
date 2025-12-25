@@ -1,0 +1,202 @@
+{
+  "brand": {
+    "name": "Tangerine",
+    "slogan": "Premium Shop",
+    "description": "Premium WPFF, Double Static & Fresh Frozen Shop",
+    "logo": "https://i.imgur.com/opUOZzu.jpeg",
+    "favicon": "https://i.imgur.com/opUOZzu.jpeg",
+    "language": "fr"
+  },
+  "theme": {
+    "primaryColor": "#f97316",
+    "secondaryColor": "#16a34a",
+    "accentColor": "#ec4899",
+    "backgroundColor": "#05090b",
+    "textColor": "#ffffff",
+    "customColors": {
+      "can-green": "#047857",
+      "can-green-dark": "#064e3b",
+      "can-gold": "#fbbf24",
+      "can-gold-light": "#fcd34d",
+      "can-copper": "#b45309"
+    }
+  },
+  "categories": [
+    {
+      "id": "all",
+      "label": "All",
+      "emoji": "✨",
+      "gradient": "from-[#f97316] to-[#16a34a]",
+      "isNew": false
+    },
+    {
+      "id": "packs_can",
+      "label": "Packs CAN 2025",
+      "emoji": "🏆",
+      "gradient": "from-can-green to-can-gold",
+      "isNew": true
+    },
+    {
+      "id": "wpff",
+      "label": "WPFF",
+      "emoji": "💎",
+      "gradient": "from-[#2563eb] to-[#06b6d4]",
+      "isNew": false
+    },
+    {
+      "id": "doublestatic",
+      "label": "Double Static",
+      "emoji": "⚡",
+      "gradient": "from-yellow-500 to-orange-500",
+      "isNew": false
+    },
+    {
+      "id": "freshfrozen",
+      "label": "Fresh Frozen",
+      "emoji": "❄️",
+      "gradient": "from-blue-400 to-indigo-500",
+      "isNew": false
+    },
+    {
+      "id": "accessoires",
+      "label": "Accessoires",
+      "emoji": "🧰",
+      "gradient": "from-[#f97316] to-[#ec4899]",
+      "isNew": false
+    }
+  ],
+  "pricing": {
+    "pricesPerCategory": {
+      "wpff": 16,
+      "doublestatic": 14,
+      "freshfrozen": 6,
+      "accessoires": 0
+    },
+    "quantityOptions": [5, 10, 20],
+    "minQuantity": 5,
+    "minWeight": 15
+  },
+  "delivery": {
+    "cities": {
+      "rabat": {
+        "name": "Rabat",
+        "price": 0,
+        "emoji": "👑",
+        "featured": true,
+        "estimatedDays": 1
+      },
+      "casablanca": {
+        "name": "Casablanca",
+        "price": 50,
+        "emoji": "🏙️",
+        "estimatedDays": 1
+      },
+      "marrakech": {
+        "name": "Marrakech",
+        "price": 100,
+        "emoji": "🕌",
+        "estimatedDays": 2
+      },
+      "agadir": {
+        "name": "Agadir",
+        "price": 200,
+        "emoji": "🏖️",
+        "estimatedDays": 2
+      },
+      "tangier": {
+        "name": "Tanger",
+        "price": 70,
+        "emoji": "⛵",
+        "estimatedDays": 1
+      }
+    }
+  },
+  "promoCodes": {
+    "420BLAZE": {
+      "discount": 0.2,
+      "label": "-20%"
+    },
+    "HAPPYWEED": {
+      "discount": 0.1,
+      "label": "-10%"
+    },
+    "ORANGEPOWER": {
+      "discount": 0.12,
+      "label": "-12%"
+    },
+    "HARAGAZZ": {
+      "discount": 0.15,
+      "label": "-15%"
+    },
+    "WELCOME10": {
+      "discount": 0.1,
+      "label": "-10%"
+    }
+  },
+  "products": [
+    {
+      "id": "product1",
+      "category": "wpff",
+      "name": "Product Name",
+      "emoji": "🥭",
+      "badge": "SOLD OUT 🔥",
+      "media": [
+        "https://example.com/video1.mp4",
+        "https://example.com/video2.mp4"
+      ],
+      "posters": [
+        "https://example.com/poster1.jpg",
+        "https://example.com/poster2.jpg"
+      ],
+      "thumbnail": "https://example.com/thumbnail.jpg",
+      "desc": "Product description goes here",
+      "price": null,
+      "oldPrice": null,
+      "isPack": false,
+      "weight": null,
+      "catalogOnly": false,
+      "details": []
+    }
+  ],
+  "contact": {
+    "telegram": "@yourusername",
+    "phone": "+212600000000",
+    "email": "contact@yourshop.com",
+    "whatsapp": "+212600000000"
+  },
+  "social": {
+    "instagram": "https://instagram.com/yourshop",
+    "facebook": "https://facebook.com/yourshop",
+    "twitter": "https://twitter.com/yourshop"
+  },
+  "seo": {
+    "title": "Tangerine — Premium Shop",
+    "description": "Premium WPFF, Double Static & Fresh Frozen Shop",
+    "keywords": "shop, premium, telegram",
+    "ogImage": "https://i.imgur.com/opUOZzu.jpeg"
+  },
+  "features": {
+    "cart": true,
+    "wishlist": true,
+    "search": true,
+    "filters": true,
+    "darkMode": true,
+    "promoCodes": true,
+    "delivery": true,
+    "paymentMethods": true,
+    "analytics": {
+      "enabled": true,
+      "clarityId": "your-clarity-id",
+      "umamiId": null
+    },
+    "telegram": {
+      "enabled": true,
+      "botToken": "your-bot-token"
+    }
+  },
+  "legal": {
+    "termsUrl": null,
+    "privacyUrl": null,
+    "returnsUrl": null
+  }
+}

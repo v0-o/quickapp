@@ -1,0 +1,17 @@
+{
+  "name": "Tangerine",
+  "short_name": "Tangerine",
+  "description": "Tangerine – Premium WPFF, Double Static & Fresh Frozen Shop",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#05090b",
+  "theme_color": "#05090b",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/opUOZzu.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

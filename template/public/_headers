@@ -1,0 +1,6 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://file.garden https://sentry.io https://browser.sentry-cdn.com https://www.clarity.ms https://c.bing.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob: https://c.bing.com; media-src 'self' https://file.garden; connect-src 'self' https://sentry.io https://*.sentry.io https://o4510435023126528.ingest.de.sentry.io https://api.telegram.org https://www.clarity.ms https://c.bing.com; worker-src 'self' blob:;
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

@@ -1,0 +1,73 @@
+// 5 Thèmes prédéfinis distincts et fonctionnels
+export const PREDEFINED_THEMES = [
+  {
+    id: 'neo-brutalist',
+    name: 'Neo Brutalist',
+    icon: '🔲',
+    description: 'Bold, high contrast, geometric',
+    theme: {
+      primaryColor: '#000000',
+      secondaryColor: '#ffff00',
+      accentColor: '#ff00ff',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      customColors: {},
+    },
+  },
+  {
+    id: 'teenage-engineering',
+    name: 'Teenage Engineering',
+    icon: '🎛️',
+    description: 'Minimal, tech, monochrome',
+    theme: {
+      primaryColor: '#ffffff',
+      secondaryColor: '#e5e5e5',
+      accentColor: '#a3a3a3',
+      backgroundColor: '#0a0a0a',
+      textColor: '#ffffff',
+      customColors: {},
+    },
+  },
+  {
+    id: 'sunset',
+    name: 'Sunset',
+    icon: '🌅',
+    description: 'Warm, vibrant, energetic',
+    theme: {
+      primaryColor: '#f97316',
+      secondaryColor: '#fb923c',
+      accentColor: '#fdba74',
+      backgroundColor: '#1c1917',
+      textColor: '#ffffff',
+      customColors: {},
+    },
+  },
+  {
+    id: 'ocean',
+    name: 'Ocean',
+    icon: '🌊',
+    description: 'Cool, calm, refreshing',
+    theme: {
+      primaryColor: '#0ea5e9',
+      secondaryColor: '#06b6d4',
+      accentColor: '#22d3ee',
+      backgroundColor: '#0c0a09',
+      textColor: '#ffffff',
+      customColors: {},
+    },
+  },
+  {
+    id: 'forest',
+    name: 'Forest',
+    icon: '🌲',
+    description: 'Natural, green, organic',
+    theme: {
+      primaryColor: '#16a34a',
+      secondaryColor: '#22c55e',
+      accentColor: '#4ade80',
+      backgroundColor: '#0a0f0a',
+      textColor: '#ffffff',
+      customColors: {},
+    },
+  },
+];

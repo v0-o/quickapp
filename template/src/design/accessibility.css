@@ -1,0 +1,122 @@
+/* Accessibility Improvements */
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  body {
+    color: #000;
+    background-color: #fff;
+  }
+
+  button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode preference */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #05090b;
+    color: #f8fafc;
+  }
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f97316;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* ARIA live regions */
+[aria-live] {
+  position: relative;
+}
+
+/* Better focus indicators for interactive elements */
+button,
+a[href],
+input,
+textarea,
+select,
+[tabindex]:not([tabindex="-1"]) {
+  position: relative;
+}
+
+button:focus-visible::after,
+a[href]:focus-visible::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid #f97316;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Color contrast for text */
+.text-on-dark {
+  color: #f8fafc;
+}
+
+.text-on-light {
+  color: #05090b;
+}
+
+/* Ensure minimum touch target size */
+button,
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Better link underlines */
+a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
