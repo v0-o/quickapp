@@ -131,6 +131,19 @@ if (typeof window !== 'undefined' && !window.Telegram) {
   };
 }
 
+// Listen for messages from parent (admin panel) - MUST BE BEFORE createRoot
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', (event) => {
+    // Ensure message is from a trusted origin in production
+    // if (event.origin !== "http://your-admin-panel-domain.com") return;
+
+    if (event.data && event.data.type === 'CONFIG_UPDATE') {
+      console.log('📥 Received config update from parent:', event.data.config);
+      updateConfigAndTheme(event.data.config);
+    }
+  });
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Sentry.ErrorBoundary

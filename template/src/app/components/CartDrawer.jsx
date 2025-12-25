@@ -8,9 +8,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { registerTangerineComponent } from '../../lib/registry.js';
 import {
   DELIVERY_PRICES,
-  MIN_QUANTITY,
-  MIN_WEIGHT,
-  PRICES,
   PROMO_CODES,
 } from '../constants/index.js';
 import { trackEvent } from '../utils/analytics.js';
@@ -47,25 +44,15 @@ const CartDrawerComponent = ({
     return 0;
   }, [appliedPromo, orderTotal]);
 
-  const totalWeight = useMemo(() => {
-    return cart.reduce((sum, item) => {
-      if (item.product.category === 'accessoires') return sum;
-      if (item.product.isPack) return sum + (item.product.weight || 0) * item.quantity;
-      return sum + item.quantity;
-    }, 0);
-  }, [cart]);
-
+  // Simplified: removed weight/minimum logic - using simple unit pricing
   const total = orderTotal - discount;
-  const meetsMinimum = totalWeight >= MIN_WEIGHT;
-  const remainingWeight = Math.max(0, MIN_WEIGHT - totalWeight);
-  const progressPercentage = Math.min(100, (totalWeight / MIN_WEIGHT) * 100);
 
   const handleQuantityChange = useCallback((index, delta) => {
     const item = cart[index];
-    const isUnitBased = item.product.isPack || item.product.category === 'accessoires';
-    const unitPrice = isUnitBased ? item.product.price : (PRICES[item.product.category] || 0);
-    const minQty = isUnitBased ? 1 : MIN_QUANTITY;
-    // Validation: Ensure quantity is within bounds (minQty to 1000)
+    // Simple unit price - always use product.price
+    const unitPrice = item.product.price || 0;
+    const minQty = 1; // Minimum quantity is always 1
+    // Validation: Ensure quantity is within bounds (1 to 1000)
     const newQuantity = Math.min(1000, Math.max(minQty, item.quantity + delta));
 
     onUpdateQuantity(index, newQuantity, unitPrice * newQuantity);
@@ -179,9 +166,8 @@ const CartDrawerComponent = ({
               ) : (
                 <>
                   {cart.map((item, idx) => {
-                    const isUnitBased = item.product.isPack || item.product.category === 'accessoires';
-                    const unitPrice = isUnitBased ? item.product.price : (PRICES[item.product.category] || 0);
-                    const minQty = isUnitBased ? 1 : MIN_QUANTITY;
+                    const unitPrice = item.product.price || 0;
+                    const minQty = 1;
 
                     return (
                       <div
@@ -196,7 +182,7 @@ const CartDrawerComponent = ({
                           <div className="flex-1 min-w-0">
                             <p className="text-white font-semibold text-sm truncate">{item.product.name}</p>
                             <p className="text-emerald-300 text-xs font-bold">
-                              {item.quantity}{isUnitBased ? ' × ' : 'g × '}{unitPrice}€
+                              {item.quantity} × {unitPrice}€
                             </p>
                             <p className="text-white/90 font-bold text-lg">{item.totalPrice}€</p>
                           </div>
@@ -217,18 +203,18 @@ const CartDrawerComponent = ({
                             disabled={item.quantity <= minQty}
                             className="bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed text-white px-3 py-2 rounded-lg transition-all font-bold flex-1 active:scale-95"
                           >
-                            {isUnitBased ? '-1' : '-1g'}
+                            -1
                           </button>
                           <div className="flex-1 text-center">
                             <span className="text-white font-bold text-lg">
-                              {item.quantity}{isUnitBased ? '' : 'g'}
+                              {item.quantity}
                             </span>
                           </div>
                           <button
                             onClick={() => handleQuantityChange(idx, 1)}
                             className="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-all font-bold flex-1 active:scale-95"
                           >
-                            {isUnitBased ? '+1' : '+1g'}
+                            +1
                           </button>
                         </div>
                       </div>
@@ -333,50 +319,11 @@ const CartDrawerComponent = ({
                   </div>
                 </div>
 
-                <div className="glass rounded-xl p-3 space-y-2 animate-slide-up">
-                  {meetsMinimum ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="text-lg">✓</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-bold text-xs">Minimum atteint</p>
-                        <p className="text-green-400 text-xs">Prêt à commander</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm">🎯</span>
-                          <p className="text-white font-bold text-xs">Min. {MIN_WEIGHT}g</p>
-                        </div>
-                        <p className="text-white/80 font-semibold text-xs">{totalWeight}g/{MIN_WEIGHT}g</p>
-                      </div>
-
-                      <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
-                        <div
-                          className="absolute inset-0 progress-bar-fill rounded-full transition-all duration-500 ease-out"
-                          style={{ width: `${progressPercentage}%` }}
-                        />
-                      </div>
-
-                      <p className="text-white/60 text-xs text-center">
-                        Ajoutez <span className="text-orange-400 font-bold">{remainingWeight}g</span> de plus
-                      </p>
-                    </div>
-                  )}
-                </div>
-
                 <button
                   onClick={handleCheckout}
-                  disabled={!meetsMinimum}
-                  className={`w-full font-bold py-4 rounded-2xl transition-all ${meetsMinimum
-                    ? 'bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 hover:from-orange-600 hover:via-pink-600 hover:to-orange-600 text-white hover:scale-105 active:scale-95 glow'
-                    : 'bg-white/10 text-white/40 cursor-not-allowed opacity-50'
-                    }`}
+                  className="w-full font-bold py-4 rounded-2xl transition-all bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 hover:from-orange-600 hover:via-pink-600 hover:to-orange-600 text-white hover:scale-105 active:scale-95 glow"
                 >
-                  {meetsMinimum ? '🚀 Commander' : `🎯 Ajoutez ${remainingWeight}g de produits`}
+                  🚀 Commander
                 </button>
               </div>
             )}

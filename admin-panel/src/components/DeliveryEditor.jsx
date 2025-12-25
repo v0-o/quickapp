@@ -40,8 +40,8 @@ export default function DeliveryEditor() {
   return (
     <div className="space-y-3">
       <div>
-        <label className="block text-xs text-white/60 mb-2 uppercase tracking-wide">
-          Delivery Cities
+        <label className="block text-xs text-white/40 mb-2 uppercase tracking-wide">
+          Villes de livraison
         </label>
         
         {/* Existing cities */}
@@ -67,7 +67,7 @@ export default function DeliveryEditor() {
             type="text"
             value={newCity.emoji}
             onChange={(e) => setNewCity({ ...newCity, emoji: e.target.value })}
-            className="w-12 px-2 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-center text-sm focus:outline-none focus:border-white/30"
+            className="w-12 px-2 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-center text-sm focus:outline-none focus:border-white/20 placeholder-white/30"
             placeholder="📍"
             maxLength={2}
           />
@@ -75,7 +75,7 @@ export default function DeliveryEditor() {
             type="text"
             value={newCity.name}
             onChange={(e) => setNewCity({ ...newCity, name: e.target.value })}
-            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-white/30"
+            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-white/20 placeholder-white/30"
             placeholder="City name"
           />
           <input

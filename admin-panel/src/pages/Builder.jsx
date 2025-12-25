@@ -13,7 +13,7 @@ export default function Builder() {
         <IPhonePreview />
       </div>
       
-      {/* Bottom Config Panel - Fixed at bottom */}
+      {/* Bottom Config Panel - Fixed */}
       <ConfigPanel />
     </div>
   );

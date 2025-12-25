@@ -6,11 +6,7 @@ import {
   useState,
 } from 'react';
 import { registerTangerineComponent } from '../../lib/registry.js';
-import {
-  MIN_QUANTITY,
-  PRICES,
-  QUANTITY_OPTIONS,
-} from '../constants/index.js';
+// Removed MIN_QUANTITY, PRICES, QUANTITY_OPTIONS - simplified pricing
 import {
   logMediaMetric,
   trackEvent,
@@ -23,7 +19,7 @@ import {
 const videoManager = getVideoManager();
 
 const ProductDetailModalComponent = ({ product, onClose, onAddToCart, onAnimateAdd, openViewer }) => {
-  const [selectedQuantity, setSelectedQuantity] = useState(MIN_QUANTITY);
+  // Removed quantity selection - simplified to unit price
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [mediaLoaded, setMediaLoaded] = useState(false);
   const videoRef = useRef(null);
@@ -97,43 +93,21 @@ const ProductDetailModalComponent = ({ product, onClose, onAddToCart, onAnimateA
 
   const handleAddToCart = useCallback((e) => {
     if (!product) return;
-    // For packs, always add 1 unit. For other products, use selectedQuantity.
-    const quantityToAdd = product.isPack ? 1 : selectedQuantity;
-    const priceToAdd = product.isPack ? (product.price || 0) : ((PRICES[product.category] || 0) * quantityToAdd);
+    // Simple unit price - always add 1 unit
+    const priceToAdd = product.price || 0;
 
-    onAddToCart(product, quantityToAdd, priceToAdd);
+    onAddToCart(product, 1, priceToAdd);
 
     if (onAnimateAdd && e?.currentTarget) {
-      onAnimateAdd(product, quantityToAdd, e.currentTarget);
+      onAnimateAdd(product, 1, e.currentTarget);
     }
 
     trackEvent('add_to_cart_from_detail', {
       product: product.name,
-      quantity: quantityToAdd,
       price: priceToAdd,
     });
     onClose();
-  }, [onAddToCart, onAnimateAdd, onClose, product, selectedQuantity]);
-
-  const handleQuantityInput = (event) => {
-    const value = event.target.value;
-    // Allow empty string for typing
-    if (value === '') {
-      setSelectedQuantity('');
-      return;
-    }
-    const numValue = parseInt(value, 10);
-    if (!Number.isNaN(numValue)) {
-      // Validation: Ensure quantity is within bounds (0 to 1000)
-      // We allow 0 temporarily for typing, but min is enforced on blur/submit
-      setSelectedQuantity(Math.min(1000, Math.max(0, numValue)));
-    }
-  };
-
-  const price = useMemo(() => {
-    const qty = selectedQuantity === '' ? 0 : selectedQuantity;
-    return product ? (PRICES[product.category] || 0) * Math.max(MIN_QUANTITY, qty) : 0;
-  }, [product, selectedQuantity]);
+  }, [onAddToCart, onAnimateAdd, onClose, product]);
 
   if (!product) return null;
 
@@ -331,102 +305,11 @@ const ProductDetailModalComponent = ({ product, onClose, onAddToCart, onAnimateA
         </div>
 
         <div className="p-5 space-y-5">
-          {product.isPack && product.details ? (
-            <div className="space-y-4">
-              <h3 className="text-white font-bold text-xl mb-3">📦 Contenu du Pack</h3>
-              <div className="glass p-4 rounded-2xl space-y-3">
-                {product.details.map((detail, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-2 rounded-xl bg-white/5 border border-white/10">
-                    <span className="text-xl">✨</span>
-                    <span className="text-white font-semibold text-base">{detail}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-white/60 text-sm italic px-2">{product.desc}</p>
-
-              {product.originalPrice && (
-                <div className="glass p-3 rounded-xl flex items-center justify-between mt-2">
-                  <div className="flex items-center gap-3">
-                    <p className="text-white/60 text-sm">Prix Spécial</p>
-                    <div className="flex items-center gap-2">
-                      <span className="line-through text-white/50 text-sm decoration-red-500/50">{product.originalPrice}€</span>
-                      <span className="gradient-text font-bold text-xl">{product.price}€</span>
-                    </div>
-                  </div>
-                  <span className="font-bold text-xs px-2 py-1 rounded-lg text-white bg-red-500/80 animate-pulse">
-                    -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div>
-              <h3 className="text-white font-bold text-xl mb-3">📝 Description</h3>
-              <p className="text-white/90 leading-relaxed text-base">{product.desc}</p>
-            </div>
-          )}
-
-          {isAccessory && !product.catalogOnly ? (
-            <div className="space-y-4">
-              <div className="glass p-4 rounded-2xl flex items-center justify-between">
-                <div>
-                  <p className="text-white/60 text-sm mb-1">Prix indicatif</p>
-                  <p className="text-white/80 font-semibold text-lg">À définir</p>
-                </div>
-              </div>
-            </div>
-          ) : product.isPack ? (
-            <button
-              onClick={handleAddToCart}
-              className="w-full glass-cta font-semibold py-3 rounded-xl flex items-center justify-center gap-2 mt-4"
-            >
-              <span>🛒</span>
-              <div className="flex items-center gap-2">
-                <span>Ajouter au panier</span>
-                {product.originalPrice && (
-                  <span className="line-through opacity-60 text-sm decoration-red-500/50">{product.originalPrice}€</span>
-                )}
-                <span>({product.price}€)</span>
-              </div>
-            </button>
-          ) : !product.catalogOnly ? (
-            <>
-              <div className="glass p-3 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <p className="text-white/60 text-xs">Prix unitaire</p>
-                  <p className="gradient-text font-bold text-lg">{PRICES[product.category] || 0}€/g</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-white font-bold text-base mb-2">⚖️ Quantité (min. {MIN_QUANTITY}g)</h3>
-
-                <div className="flex gap-3">
-                  <input
-                    type="number"
-                    min={MIN_QUANTITY}
-                    value={selectedQuantity}
-                    onChange={handleQuantityInput}
-                    onBlur={() => {
-                      if (selectedQuantity === '' || selectedQuantity < MIN_QUANTITY) {
-                        setSelectedQuantity(MIN_QUANTITY);
-                      }
-                    }}
-                    className="w-full glass text-white px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-400 text-center font-bold text-lg"
-                    placeholder={`Min. ${MIN_QUANTITY}g`}
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={handleAddToCart}
-                className="w-full glass-cta font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
-              >
-                <span>🛒</span>
-                <span>Ajouter ({price}€)</span>
-              </button>
-            </>
-          ) : null}
+          {/* Description only - simplified */}
+          <div>
+            <h3 className="text-white font-bold text-xl mb-3">📝 Description</h3>
+            <p className="text-white/90 leading-relaxed text-base">{product.desc || 'Aucune description disponible'}</p>
+          </div>
         </div>
       </div>
     </div>

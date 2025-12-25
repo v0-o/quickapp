@@ -75,10 +75,9 @@ export const MainLayout = ({
         return <LoadingScreen onComplete={() => { }} />;
     }
 
-    const bgClasses = theme === 'light'
-        ? 'min-h-screen bg-gradient-to-br from-[#fef7f3] via-[#fdf4ef] to-[#fcf1eb] relative overflow-hidden'
-        : 'min-h-screen bg-gradient-to-br from-[#05090b] via-[#0b1411] to-[#05090b] relative overflow-hidden';
-    const textClasses = theme === 'light' ? 'text-slate-900' : 'text-white';
+    // Use CSS variable for background color from theme
+    const bgClasses = 'min-h-screen relative overflow-hidden';
+    const textClasses = 'text-[var(--color-text)]';
 
     const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
     const totalWeight = cart.reduce((sum, item) => {
@@ -90,7 +89,7 @@ export const MainLayout = ({
     const cartProgress = Math.min(100, (totalWeight / MIN_WEIGHT) * 100);
 
     return (
-        <div className={bgClasses}>
+        <div className={bgClasses} style={{ backgroundColor: 'var(--color-background)' }}>
             <FlyingBadge />
 
             {welcomeRendered && (
@@ -156,13 +155,21 @@ export const MainLayout = ({
                 <button
                     onClick={() => setCartOpen(true)}
                     ref={cartButtonRef}
-                    className="relative flex items-center justify-center w-20 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 text-white shadow-[0_12px_40px_rgba(249,115,22,0.5),0_0_0_4px_rgba(249,115,22,0.1)] hover:scale-105 active:scale-95 transition-all"
+                    className="relative flex items-center justify-center w-20 h-14 text-white hover:scale-105 active:scale-95 transition-all"
+                    style={{
+                        background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
+                        borderRadius: 'var(--theme-border-radius, 16px)',
+                        boxShadow: '0 12px 40px rgb(var(--color-primary-rgb) / 0.4)'
+                    }}
                     aria-label="Panier"
                 >
                     <div className="relative">
                         <span aria-hidden="true" className="text-3xl">🛒</span>
                         {cart.length > 0 && (
-                            <span className="absolute -top-3 -right-3 bg-white text-orange-600 text-[11px] min-w-[22px] h-[22px] rounded-full flex items-center justify-center font-bold shadow-lg animate-bounce-subtle">
+                            <span 
+                                className="absolute -top-3 -right-3 bg-white text-[11px] min-w-[22px] h-[22px] rounded-full flex items-center justify-center font-bold shadow-lg animate-bounce-subtle"
+                                style={{ color: 'var(--color-primary)' }}
+                            >
                                 {cart.length}
                             </span>
                         )}

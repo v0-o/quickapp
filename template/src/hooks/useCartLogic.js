@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useCartStore } from '../store/cartStore.js';
 import { useUIStore } from '../store/uiStore.js';
 import { useHaptic } from './useHaptic.js';
-import { MIN_QUANTITY, PRICES } from '../app/constants/index.js';
 
 export const useCartLogic = () => {
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart } = useCartStore();
@@ -11,13 +10,7 @@ export const useCartLogic = () => {
 
   const handleAddToCart = useCallback(
     async (product, quantity, price) => {
-      // Bypass minimum quantity for packs and accessories
-      if (!product.isPack && product.category !== 'accessoires' && quantity < MIN_QUANTITY) {
-        showNotification(`Minimum ${MIN_QUANTITY}g par produit`, 'error');
-        error();
-        return;
-      }
-
+      // Simplified: no minimum quantity check - using simple unit pricing
       try {
         await addToCart(product, quantity, price);
         success();

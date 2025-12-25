@@ -1,5 +1,5 @@
 // Hot reload system for config updates via postMessage
-import { injectThemeColors } from './loader.js';
+import { updateConfigAndTheme } from './loader.js';
 
 let configCache = null;
 
@@ -13,10 +13,8 @@ export function setupHotReload() {
       
       console.log('🔄 Hot reload: Config updated');
       
-      // Update theme colors instantly
-      if (newConfig.theme) {
-        injectThemeColors(newConfig.theme);
-      }
+      // Update config cache and inject theme colors instantly
+      updateConfigAndTheme(newConfig);
       
       // Trigger a custom event for other parts of the app to listen
       window.dispatchEvent(new CustomEvent('configUpdated', { detail: newConfig }));

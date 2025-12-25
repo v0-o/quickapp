@@ -8,10 +8,7 @@ import {
 } from 'react';
 import { motion } from 'framer-motion';
 import { registerTangerineComponent } from '../../lib/registry.js';
-import {
-  PRICES,
-  QUANTITY_OPTIONS,
-} from '../constants/index.js';
+// Removed PRICES and QUANTITY_OPTIONS - using simple unit price now
 import {
   logMediaMetric,
   trackEvent,
@@ -150,14 +147,8 @@ const ProductCardComponent = memo(({
     }
   }, [forcePlay, isVisible]);
 
-  const handleQuickAdd = useCallback((qty, event) => {
+  const handleAddToCart = useCallback((event) => {
     event.stopPropagation();
-
-    if (product.category === 'accessoires') {
-      onViewDetails(product);
-      trackEvent('accessory_open_details', { product: product.name });
-      return;
-    }
 
     const button = event.currentTarget;
     if (button) {
@@ -165,17 +156,17 @@ const ProductCardComponent = memo(({
       setTimeout(() => button.classList.remove('tap-state'), 260);
     }
 
-    const price = product.isPack ? (product.price || 0) * qty : (PRICES[product.category] || 0) * qty;
-    onAddToCart(product, qty, price);
+    // Simple unit price - always add 1 unit
+    const price = product.price || 0;
+    onAddToCart(product, 1, price);
     if (onAnimateAdd && button) {
-      onAnimateAdd(product, qty, button);
+      onAnimateAdd(product, 1, button);
     }
-    trackEvent('quick_add_to_cart', {
+    trackEvent('add_to_cart', {
       product: product.name,
-      quantity: qty,
       price,
     });
-  }, [onAddToCart, onAnimateAdd, onViewDetails, product]);
+  }, [onAddToCart, onAnimateAdd, product]);
 
   const handleAccessoryCTA = useCallback((event) => {
     event.stopPropagation();
@@ -304,80 +295,35 @@ const ProductCardComponent = memo(({
                   📉 -{Math.round((((product.oldPrice || product.originalPrice) - (product.isPack ? (product.price || 0) : (PRICES[product.category] || 0))) / (product.oldPrice || product.originalPrice)) * 100)}%
                 </span>
               )}
-              <span
-                className={`font-bold text-xs px-2 py-1 rounded-lg ${isAccessory
-                  ? 'bg-white/10 text-white/80 border border-white/10'
-                  : product.isPack
-                    ? 'text-can-gold bg-can-gold/20 border border-can-gold/30'
-                    : 'text-emerald-300 bg-emerald-500/20'
-                  }`}
+              <span 
+                className="font-bold text-xs px-2 py-1 rounded-lg"
+                style={{
+                  color: 'var(--color-primary)',
+                  backgroundColor: 'rgb(var(--color-primary-rgb) / 0.2)',
+                  borderRadius: 'var(--theme-border-radius, 8px)'
+                }}
               >
-                {isAccessory ? 'Prix à définir' : product.isPack ? (
-                  product.originalPrice ? (
-                    <span className="flex items-center gap-1">
-                      <span className="line-through opacity-50 text-[10px] decoration-red-500/50">{product.originalPrice}€</span>
-                      <span>{product.price}€</span>
-                    </span>
-                  ) : `${product.price}€`
-                ) : (
-                  product.oldPrice ? (
-                    <span className="flex items-center gap-1">
-                      <span className="line-through opacity-50 text-[10px] decoration-red-500/50">{product.oldPrice}€</span>
-                      <span>{PRICES[product.category] || 0}€/g</span>
-                    </span>
-                  ) : `${PRICES[product.category] || 0}€/g`
-                )}
+                {product.price ? `${product.price}€` : 'Prix à définir'}
               </span>
             </div>
           )}
         </div>
 
-        <div className="flex gap-3">
-          {product.catalogOnly ? (
-            <button
-              onClick={handleAccessoryCTA}
-              className="w-full glass-cta font-semibold h-[52px] rounded-xl text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
-            >
-              <span>👁️</span>
-              <span>Voir détails</span>
-            </button>
-          ) : isAccessory || product.isPack ? (
-            <div className="flex gap-2 w-full">
-              <button
-                onClick={(e) => handleQuickAdd(1, e)}
-                className="flex-1 glass-cta font-semibold h-[52px] rounded-xl text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
-              >
-                <span>🛒</span>
-                <span>Ajouter</span>
-              </button>
-              <button
-                onClick={handleAccessoryCTA}
-                className="flex-1 glass font-semibold h-[52px] rounded-xl text-sm flex items-center justify-center gap-1.5 hover:bg-white/10 active:scale-95 transition-transform"
-              >
-                <span>👁️</span>
-                <span>Détails</span>
-              </button>
-            </div>
-          ) : (
-            QUANTITY_OPTIONS.map((qty) => (
-              <button
-                key={qty}
-                onClick={(event) => handleQuickAdd(qty, event)}
-                className="flex-1 quantity-button glass-cta font-semibold px-6 py-2.5 rounded-xl text-base leading-tight"
-              >
-                {qty}g
-                <br />
-                <span className="block text-xs opacity-90 mt-0.5">
-                  {product.oldPrice && (
-                    <span className="line-through text-white/50 mr-1 decoration-red-500/50">
-                      {product.oldPrice * qty}€
-                    </span>
-                  )}
-                  {(PRICES[product.category] || 0) * qty}€
-                </span>
-              </button>
-            ))
-          )}
+        <div className="flex gap-2 w-full">
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 glass-cta font-semibold h-[52px] rounded-xl text-sm flex items-center justify-center gap-1.5 active:scale-95 transition-transform"
+          >
+            <span>🛒</span>
+            <span>Ajouter au panier</span>
+          </button>
+          <button
+            onClick={handleAccessoryCTA}
+            className="flex-1 glass font-semibold h-[52px] rounded-xl text-sm flex items-center justify-center gap-1.5 hover:bg-white/10 active:scale-95 transition-transform"
+          >
+            <span>👁️</span>
+            <span>Voir détail</span>
+          </button>
         </div>
       </div>
     </motion.div>

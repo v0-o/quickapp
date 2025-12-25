@@ -1,18 +1,20 @@
 import { useEffect, useRef } from "react";
 import { registerTangerineComponent } from "../../lib/registry.js";
 import { trackEvent } from "../utils/analytics.js";
-import { getContact, getBrand } from "../../config/loader.js";
+import { getContact, getSocial, getBrand } from "../../config/loader.js";
 
 const ContactModalComponent = ({ isOpen, onClose }) => {
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
 
   // Get contact info from config
-  let contactInfo = { telegram: "", phone: "", email: "" };
+  let contactInfo = { email: "", phone: "", whatsapp: "" };
+  let socialInfo = { instagram: "" };
   let brandName = "Notre boutique";
 
   try {
     contactInfo = getContact();
+    socialInfo = getSocial();
     brandName = getBrand().name;
   } catch (error) {
     console.warn("Failed to load contact info from config:", error);
@@ -79,16 +81,12 @@ const ContactModalComponent = ({ isOpen, onClose }) => {
             ref={closeRef}
           >
             <div className="relative">
-              {/* Glow effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-pink-500/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
-              {/* Main button container */}
-              <div className="relative px-4 py-3 rounded-2xl glass backdrop-blur-2xl border border-white/10 shadow-2xl group-hover:border-orange-400/40 group-hover:bg-gradient-to-br group-hover:from-orange-500/10 group-hover:to-pink-500/10 transition-all duration-300 active:scale-95">
+              <div className="absolute inset-0 bg-white/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className="relative px-4 py-3 rounded-2xl glass backdrop-blur-2xl border border-white/10 shadow-2xl group-hover:border-white/20 group-hover:bg-white/5 transition-all duration-300 active:scale-95">
                 <div className="flex items-center gap-2">
-                  {/* Animated chevron icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-white/70 group-hover:text-white group-hover:-translate-x-0.5 transition-all duration-300"
+                    className="h-5 w-5 text-white/70 group-hover:text-white transition-all duration-300"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -100,8 +98,6 @@ const ContactModalComponent = ({ isOpen, onClose }) => {
                       d="M15 19l-7-7 7-7"
                     />
                   </svg>
-
-                  {/* Text label */}
                   <span className="text-xs font-semibold text-white/70 group-hover:text-white transition-colors duration-300 tracking-wide">
                     RETOUR
                   </span>
@@ -111,105 +107,64 @@ const ContactModalComponent = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-4">
           <div className="text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 float">
-              📱
-            </div>
             <h4 className="text-white font-bold text-xl mb-2">
-              Commandez maintenant
+              Contactez-nous
             </h4>
             <p className="text-white/60 text-sm mb-6">
-              Contactez-nous sur Telegram
+              {brandName}
             </p>
           </div>
 
-          <div className="space-y-3">
-            {contactInfo.telegram && (
+          <div className="space-y-2">
+            {contactInfo.email && (
               <a
-                href={`https://t.me/${contactInfo.telegram.replace("@", "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackEvent("contact_telegram_click")}
-                className="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-4 rounded-2xl transition-all hover:scale-105 active:scale-95 glow text-center"
+                href={`mailto:${contactInfo.email}`}
+                onClick={() => trackEvent("contact_email_click")}
+                className="flex items-center gap-3 w-full glass hover:bg-white/10 text-white font-medium py-3 px-4 rounded-xl transition-all active:scale-95"
               >
-                📲 {contactInfo.telegram}
+                <span className="text-xl">📧</span>
+                <span className="flex-1 text-left">{contactInfo.email}</span>
               </a>
             )}
 
-            <a
-              href="https://t.me/angry0terps"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("contact_telegram_angry_click")}
-              className="block w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-4 rounded-2xl transition-all hover:scale-105 active:scale-95 glow text-center"
-            >
-              📲 @angry0terps
-            </a>
-          </div>
+            {contactInfo.phone && (
+              <a
+                href={`tel:${contactInfo.phone}`}
+                onClick={() => trackEvent("contact_phone_click")}
+                className="flex items-center gap-3 w-full glass hover:bg-white/10 text-white font-medium py-3 px-4 rounded-xl transition-all active:scale-95"
+              >
+                <span className="text-xl">📱</span>
+                <span className="flex-1 text-left">{contactInfo.phone}</span>
+              </a>
+            )}
 
-          <div className="glass rounded-2xl p-4 text-center">
-            <p className="text-white font-bold mb-2">Disponible 24/7</p>
-            <p className="text-white/60 text-sm">
-              Deux contacts pour vous servir
-            </p>
-          </div>
+            {contactInfo.whatsapp && (
+              <a
+                href={`https://wa.me/${contactInfo.whatsapp.replace(/[^0-9]/g, '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("contact_whatsapp_click")}
+                className="flex items-center gap-3 w-full glass hover:bg-white/10 text-white font-medium py-3 px-4 rounded-xl transition-all active:scale-95"
+              >
+                <span className="text-xl">💬</span>
+                <span className="flex-1 text-left">WhatsApp</span>
+              </a>
+            )}
 
-          <div className="border-t border-white/20 pt-6">
-            <h4 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-              <span>💳</span>
-              <span>Modes de paiement acceptés</span>
-            </h4>
-
-            <div className="space-y-3">
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">💵</span>
-                  <span className="text-white font-semibold">Espèces</span>
-                </div>
-                <p className="text-white/60 text-sm">
-                  Toutes devises acceptées
-                </p>
-              </div>
-
-              <div className="glass rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl">🪙</span>
-                  <span className="text-white font-semibold">
-                    Cryptomonnaies
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "Solana", icon: "◎" },
-                    { label: "USDT", icon: "₮" },
-                    { label: "Bitcoin", icon: "₿" },
-                    { label: "Ethereum", icon: "Ξ" },
-                  ].map(({ label, icon }) => (
-                    <div
-                      key={label}
-                      className="glass-dark rounded-lg p-2 text-center"
-                    >
-                      <div className="text-lg mb-1">{icon}</div>
-                      <p className="text-white/80 text-xs font-semibold">
-                        {label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex gap-4 text-white/60 text-xs">
-            <div className="flex-1 flex items-center justify-center gap-2 glass rounded-xl py-3">
-              <span>🚚</span>
-              <span>Rapide</span>
-            </div>
-            <div className="flex-1 flex items-center justify-center gap-2 glass rounded-xl py-3">
-              <span>✅</span>
-              <span>Qualité</span>
-            </div>
+            {socialInfo.instagram && (
+              <a
+                href={socialInfo.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("contact_instagram_click")}
+                className="flex items-center gap-3 w-full glass hover:bg-white/10 text-white font-medium py-3 px-4 rounded-xl transition-all active:scale-95"
+              >
+                <span className="text-xl">📸</span>
+                <span className="flex-1 text-left">Instagram</span>
+              </a>
+            )}
           </div>
         </div>
       </div>

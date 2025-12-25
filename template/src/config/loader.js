@@ -11,11 +11,12 @@ function hexToRgb(hex) {
     : "0, 0, 0";
 }
 
-// Inject theme colors into CSS variables
+// Inject theme colors and typography into CSS variables
 export function injectThemeColors(theme) {
   if (!theme) return;
 
   const root = document.documentElement;
+  const body = document.body;
 
   // Inject main colors
   if (theme.primaryColor) {
@@ -38,10 +39,32 @@ export function injectThemeColors(theme) {
 
   if (theme.backgroundColor) {
     root.style.setProperty("--color-background", theme.backgroundColor);
+    // Apply background to body immediately
+    body.style.backgroundColor = theme.backgroundColor;
   }
 
   if (theme.textColor) {
     root.style.setProperty("--color-text", theme.textColor);
+    body.style.color = theme.textColor;
+  }
+
+  // Inject typography
+  if (theme.fontFamily) {
+    root.style.setProperty("--theme-font-family", theme.fontFamily);
+    body.style.fontFamily = theme.fontFamily;
+  }
+
+  if (theme.fontWeight) {
+    root.style.setProperty("--theme-font-weight", theme.fontWeight);
+    body.style.fontWeight = theme.fontWeight;
+  }
+
+  if (theme.borderRadius) {
+    root.style.setProperty("--theme-border-radius", theme.borderRadius);
+  }
+
+  if (theme.borderWidth) {
+    root.style.setProperty("--theme-border-width", theme.borderWidth);
   }
 
   // Inject custom colors
@@ -51,7 +74,15 @@ export function injectThemeColors(theme) {
     });
   }
 
-  console.log("✅ Theme colors injected into CSS variables");
+  // Update gradient
+  if (theme.primaryColor && theme.secondaryColor) {
+    root.style.setProperty(
+      "--gradient-primary",
+      `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`
+    );
+  }
+
+  console.log("✅ Theme colors and typography injected into CSS variables");
 }
 
 export async function loadConfig() {
@@ -123,4 +154,13 @@ export function getSEO() {
 
 export function getFeatures() {
   return getConfig().features;
+}
+
+// Function to update config and re-inject theme colors (for postMessage updates)
+export function updateConfigAndTheme(newConfig) {
+  config = newConfig;
+  if (config.theme) {
+    injectThemeColors(config.theme);
+  }
+  console.log("🔄 Config updated via postMessage, theme re-injected.");
 }
