@@ -88,20 +88,56 @@ export function injectThemeColors(theme) {
 export async function loadConfig() {
   if (config) return config;
 
-  try {
-    const response = await fetch("/config.json");
-    config = await response.json();
+  // Retry logic: try up to 3 times with increasing delays
+  const maxRetries = 3;
+  let lastError = null;
 
-    // Inject theme colors immediately
-    if (config.theme) {
-      injectThemeColors(config.theme);
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🔄 Fetching config.json (attempt ${attempt}/${maxRetries}) from:`, window.location.origin);
+      
+      // Create timeout abort controller for 5 second timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch("/config.json", {
+        cache: "no-cache", // Always fetch fresh config
+        signal: controller.signal,
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      config = await response.json();
+      console.log("✅ Config loaded successfully");
+
+      // Inject theme colors immediately
+      if (config.theme) {
+        injectThemeColors(config.theme);
+      }
+
+      return config;
+    } catch (error) {
+      lastError = error;
+      console.warn(`⚠️ Attempt ${attempt} failed:`, error.message);
+      
+      // If not the last attempt, wait before retrying
+      if (attempt < maxRetries) {
+        const delay = attempt * 500; // 500ms, 1000ms, 1500ms
+        console.log(`⏳ Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
     }
-
-    return config;
-  } catch (error) {
-    console.error("Failed to load config:", error);
-    throw new Error("Configuration file not found");
   }
+
+  // All retries failed
+  console.error("❌ Failed to load config after all retries:", lastError);
+  console.error("📍 Current origin:", window.location.origin);
+  console.error("📍 Attempted URL:", `${window.location.origin}/config.json`);
+  throw new Error(`Configuration file not found after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}`);
 }
 
 export function getConfig() {

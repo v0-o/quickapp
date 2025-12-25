@@ -4,7 +4,7 @@ export const CategoryList = ({ selectedCategory, onCategoryChange, scrollRef }) 
     return (
         <div className="relative group">
             {/* Gradient Fade Indicator - Right Side */}
-            <div className="absolute right-0 top-0 bottom-3 w-16 bg-gradient-to-l from-[#05090b] to-transparent pointer-events-none z-10 opacity-80" />
+            <div className="absolute right-0 top-0 bottom-3 w-16 bg-gradient-to-l pointer-events-none z-10 opacity-80" style={{ background: `linear-gradient(to left, var(--color-background), transparent)` }} />
 
             <div
                 className="flex gap-3 overflow-x-auto pb-3 hide-scrollbar snap-x snap-mandatory scroll-smooth"

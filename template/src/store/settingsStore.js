@@ -2,15 +2,6 @@ import { create } from 'zustand';
 import { StorageManager } from '../app/utils/storage.js';
 
 export const useSettingsStore = create((set) => ({
-  theme: 'dark',
-  setTheme: async (newTheme) => {
-    set({ theme: newTheme });
-    if (typeof document !== 'undefined') {
-      document.documentElement.className = newTheme === 'light' ? 'theme-light' : '';
-    }
-    await StorageManager.saveTheme(newTheme);
-  },
-
   deliveryCity: 'rabat',
   setDeliveryCity: async (city) => {
     set({ deliveryCity: city });

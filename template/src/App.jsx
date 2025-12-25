@@ -88,8 +88,6 @@ const App = () => {
     setWishlist,
     orderHistory,
     setOrderHistory,
-    theme,
-    setTheme,
   } = useSettingsStore();
 
   // 3. Local UI State
@@ -574,11 +572,6 @@ const App = () => {
     [setSelectedCategory],
   );
 
-  const handleThemeToggle = useCallback(async () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    trackEvent("theme_changed", { theme: newTheme });
-  }, [theme, setTheme]);
 
   const openViewer = useCallback(
     (product, startIndex = 0) => {
@@ -634,7 +627,6 @@ const App = () => {
         handleDismissWelcome={handleDismissWelcome}
         homeScreenStatus={homeScreenStatus}
         handleAddToHomeScreen={handleAddToHomeScreen}
-        handleThemeToggle={handleThemeToggle}
         horizontalScrollProgress={horizontalScrollProgress}
         handleCategoryChange={handleCategoryChange}
         confettiTrigger={confettiTrigger}
@@ -650,7 +642,6 @@ const App = () => {
         handleConfirmOrder={handleConfirmOrder}
       >
         <Home
-          theme={theme}
           selectedCategory={selectedCategory}
           handleCategoryChange={handleCategoryChange}
           productsToDisplay={productsToDisplay}

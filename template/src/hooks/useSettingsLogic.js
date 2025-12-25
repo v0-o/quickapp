@@ -6,8 +6,6 @@ import { trackEvent } from '../app/utils/analytics.js';
 
 export const useSettingsLogic = () => {
   const {
-    theme,
-    setTheme,
     deliveryCity,
     setDeliveryCity,
     paymentMethod,
@@ -17,13 +15,6 @@ export const useSettingsLogic = () => {
   } = useSettingsStore();
   const { showNotification } = useUIStore();
   const { light, success } = useHaptic();
-
-  const handleThemeToggle = useCallback(async () => {
-    light();
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    await setTheme(newTheme);
-    trackEvent('theme_changed', { theme: newTheme });
-  }, [theme, setTheme, light]);
 
   const handleDeliveryCityChange = useCallback(
     async (city) => {
@@ -61,8 +52,6 @@ export const useSettingsLogic = () => {
   }, [setAppliedPromo, light, showNotification]);
 
   return {
-    theme,
-    handleThemeToggle,
     deliveryCity,
     handleDeliveryCityChange,
     paymentMethod,

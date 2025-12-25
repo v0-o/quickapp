@@ -5,7 +5,6 @@ import { useCartStore } from '../../store/cartStore.js';
 import { useTMALogic } from '../../hooks/useTMALogic.js';
 import { MIN_WEIGHT } from '../constants/index.js';
 
-import { ThemeToggle } from './ThemeToggle.jsx';
 import { ParticlesBackground } from './ParticlesBackground.jsx';
 import { FlyingBadge } from './FlyingBadge.jsx';
 import { Notification } from './Notification.jsx';
@@ -31,7 +30,6 @@ export const MainLayout = ({
     handleDismissWelcome,
     homeScreenStatus,
     handleAddToHomeScreen,
-    handleThemeToggle,
     horizontalScrollProgress,
     handleCategoryChange,
     confettiTrigger,
@@ -54,7 +52,7 @@ export const MainLayout = ({
     handleConfirmOrder
 }) => {
     const {
-        theme, deliveryCity, paymentMethod, appliedPromo
+        deliveryCity, paymentMethod, appliedPromo
     } = useSettingsStore();
 
     const {
@@ -89,7 +87,12 @@ export const MainLayout = ({
     const cartProgress = Math.min(100, (totalWeight / MIN_WEIGHT) * 100);
 
     return (
-        <div className={bgClasses} style={{ backgroundColor: 'var(--color-background)' }}>
+        <div 
+            className={bgClasses} 
+            style={{ 
+                background: `linear-gradient(135deg, var(--color-background) 0%, var(--color-background) 50%, rgb(var(--color-primary-rgb) / 0.05) 100%)`
+            }}
+        >
             <FlyingBadge />
 
             {welcomeRendered && (
@@ -112,8 +115,6 @@ export const MainLayout = ({
             </div>
 
             {showParticles && !isTelegramIOS && <ParticlesBackground />}
-
-            <ThemeToggle theme={theme} onToggle={handleThemeToggle} cartOpen={isCartOpen} />
 
             {miniApp?.addToHomeScreen && homeScreenStatus !== 'added' && (
                 <div className="max-w-7xl mx-auto px-4 pt-4">

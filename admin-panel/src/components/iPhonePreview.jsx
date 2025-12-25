@@ -20,8 +20,22 @@ export default function IPhonePreview() {
     }
     
     setTemplateUrl(url);
+    
+    // Preconnect to template URL for faster loading
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = url;
+    document.head.appendChild(link);
+    
     console.log('📱 Template URL:', url);
     console.log('🌐 Current hostname:', hostname);
+    
+    return () => {
+      // Cleanup
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    };
   }, []);
 
   // Send config update to iframe via postMessage (NO RELOAD)
@@ -34,7 +48,7 @@ export default function IPhonePreview() {
     if (currentConfigStr !== lastConfigRef.current) {
       lastConfigRef.current = currentConfigStr;
       
-      // Wait a bit for the file to be saved, then send message
+      // Reduced delay for faster updates (100ms instead of 400ms)
       const timer = setTimeout(() => {
         try {
           const iframeWindow = iframeRef.current.contentWindow;
@@ -50,7 +64,7 @@ export default function IPhonePreview() {
         } catch (e) {
           console.error('PostMessage error:', e);
         }
-      }, 400);
+      }, 100);
 
       return () => clearTimeout(timer);
     }
@@ -61,14 +75,20 @@ export default function IPhonePreview() {
     setIframeLoading(false);
     console.log('✅ Iframe chargée avec succès');
     
-    // Send initial config once iframe is loaded
+    // Send initial config immediately once iframe is loaded (reduced delay)
     if (config && iframeRef.current?.contentWindow) {
+      // Send immediately, the iframe's message listener is already set up
       setTimeout(() => {
-        iframeRef.current.contentWindow.postMessage({
-          type: 'CONFIG_UPDATE',
-          config: config,
-        }, '*');
-      }, 500);
+        try {
+          iframeRef.current.contentWindow.postMessage({
+            type: 'CONFIG_UPDATE',
+            config: config,
+          }, '*');
+          console.log('📤 Sent initial config to iframe');
+        } catch (e) {
+          console.error('PostMessage error:', e);
+        }
+      }, 100); // Reduced from 500ms to 100ms
     }
   };
 
@@ -94,6 +114,7 @@ export default function IPhonePreview() {
             title="Template Preview"
             allow="camera; microphone; geolocation"
             sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+            loading="eager"
             onLoad={handleIframeLoad}
             onError={handleIframeError}
             style={{ transform: 'scale(0.746)', transformOrigin: 'top left', width: '133.69%', height: '133.69%' }}

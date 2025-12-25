@@ -13,7 +13,7 @@ export function useConfigSync() {
       clearTimeout(timeoutRef.current);
     }
 
-    // Debounce save (300ms)
+    // Debounce save (150ms - reduced for faster sync)
     timeoutRef.current = setTimeout(async () => {
       try {
         const response = await fetch('/api/config', {

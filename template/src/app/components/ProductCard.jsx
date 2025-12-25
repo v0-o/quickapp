@@ -287,7 +287,16 @@ const ProductCardComponent = memo(({
       <div className="p-4 flex flex-col gap-3 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <span className="text-3xl">{product.emoji}</span>
-          <h3 className="text-white font-bold text-lg flex-1 line-clamp-2 h-14 flex items-center">{product.name}</h3>
+          <h3 
+            className="font-bold text-lg flex-1 line-clamp-2 h-14 flex items-center"
+            style={{ 
+              color: 'var(--color-text)',
+              fontFamily: 'var(--theme-font-family, inherit)',
+              fontWeight: 'var(--theme-font-weight, 700)'
+            }}
+          >
+            {product.name}
+          </h3>
           {!product.catalogOnly && (
             <div className="flex gap-1.5">
               {(product.oldPrice || (product.isPack && product.originalPrice)) && (
