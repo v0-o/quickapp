@@ -16,13 +16,13 @@ const LoadingScreenComponent = ({ onComplete }) => {
   const [messageIndex, setMessageIndex] = useState(0);
 
   // Get brand info from config
-  let brandName = "Chargement";
-  let brandLogo = "https://via.placeholder.com/150";
+  let brandName = "My Shop";
+  let brandLogo = null;
 
   try {
     const brand = getBrand();
-    brandName = brand.name || "Chargement";
-    brandLogo = brand.logo || "https://via.placeholder.com/150";
+    brandName = brand.name || "My Shop";
+    brandLogo = brand.logo || null; // No default logo
   } catch (error) {
     console.warn("Failed to load brand from config:", error);
   }
@@ -90,6 +90,7 @@ const LoadingScreenComponent = ({ onComplete }) => {
         <div className="loading-noise" />
 
         <div className="loading-core">
+          {brandLogo && (
           <div className="loading-logo-wrap">
             <div className="loading-ring" />
             <div className="loading-ring" />
@@ -98,11 +99,12 @@ const LoadingScreenComponent = ({ onComplete }) => {
               alt={brandName}
               className="loading-logo"
               onError={(event) => {
-                event.target.src = "https://via.placeholder.com/150";
+                  event.target.style.display = 'none';
               }}
             />
             <div className="loading-shine" />
           </div>
+          )}
 
           <span className="loading-tagline">{brandName}</span>
 

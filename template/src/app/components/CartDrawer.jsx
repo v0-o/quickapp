@@ -321,7 +321,11 @@ const CartDrawerComponent = ({
 
                 <button
                   onClick={handleCheckout}
-                  className="w-full font-bold py-4 rounded-2xl transition-all bg-gradient-to-r from-orange-500 via-pink-500 to-orange-500 hover:from-orange-600 hover:via-pink-600 hover:to-orange-600 text-white hover:scale-105 active:scale-95 glow"
+                  className="w-full font-bold py-4 rounded-2xl transition-all text-white hover:scale-105 active:scale-95 glow glass-cta"
+                  style={{
+                    background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
+                    borderRadius: 'var(--theme-border-radius, 16px)',
+                  }}
                 >
                   🚀 Commander
                 </button>

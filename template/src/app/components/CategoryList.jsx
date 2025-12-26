@@ -1,6 +1,29 @@
-import { CATEGORIES } from '../constants/index.js';
+import { useState, useEffect } from 'react';
+import { CATEGORIES, getCategoriesData } from '../constants/index.js';
 
 export const CategoryList = ({ selectedCategory, onCategoryChange, scrollRef }) => {
+    const [categories, setCategories] = useState(CATEGORIES);
+    
+    // Update categories when config changes
+    useEffect(() => {
+        const updateCategories = () => {
+            const newCategories = getCategoriesData();
+            setCategories(newCategories);
+        };
+        
+        // Update on mount
+        updateCategories();
+        
+        // Listen for config updates
+        window.addEventListener('configUpdated', updateCategories);
+        window.addEventListener('forceRerender', updateCategories);
+        
+        return () => {
+            window.removeEventListener('configUpdated', updateCategories);
+            window.removeEventListener('forceRerender', updateCategories);
+        };
+    }, []);
+    // Always show the category list, even if empty (shows structure)
     return (
         <div className="relative group">
             {/* Gradient Fade Indicator - Right Side */}
@@ -10,7 +33,13 @@ export const CategoryList = ({ selectedCategory, onCategoryChange, scrollRef }) 
                 className="flex gap-3 overflow-x-auto pb-3 hide-scrollbar snap-x snap-mandatory scroll-smooth"
                 ref={scrollRef}
             >
-                {CATEGORIES.map((category) => {
+                {categories.length === 0 ? (
+                    // Show placeholder when no categories
+                    <div className="px-5 py-2.5 rounded-full bg-gradient-to-br from-white/5 to-white/2 border border-white/10 text-white/40 text-sm">
+                        Aucune catégorie
+                    </div>
+                ) : (
+                    categories.map((category) => {
                     const isActive = selectedCategory === category.id;
                     return (
                         <button
@@ -32,7 +61,7 @@ export const CategoryList = ({ selectedCategory, onCategoryChange, scrollRef }) 
                             <span className="tracking-wide">{category.label}</span>
                         </button>
                     );
-                })}
+                }))}
             </div>
         </div>
     );

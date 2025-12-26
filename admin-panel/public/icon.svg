@@ -1,0 +1,79 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond arrondi style iOS avec gradient -->
+  <defs>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Ombre douce -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Fond avec coins arrondis iOS -->
+  <rect width="1024" height="1024" rx="226" fill="url(#mainGradient)"/>
+  
+  <!-- Smartphone minimaliste -->
+  <g transform="translate(512, 512)">
+    <!-- Corps du téléphone -->
+    <rect x="-120" y="-200" width="240" height="400" rx="30" 
+          fill="#FFFFFF" opacity="0.95" filter="url(#softGlow)"/>
+    
+    <!-- Écran -->
+    <rect x="-100" y="-170" width="200" height="320" rx="20" 
+          fill="#1F2937" opacity="0.3"/>
+    
+    <!-- Notch du téléphone (style moderne) -->
+    <rect x="-40" y="-180" width="80" height="12" rx="6" 
+          fill="#1F2937" opacity="0.2"/>
+    
+    <!-- Bouton home indicator -->
+    <rect x="-30" y="170" width="60" height="5" rx="2.5" 
+          fill="#1F2937" opacity="0.15"/>
+  </g>
+  
+  <!-- Étincelles magiques autour du téléphone -->
+  <g transform="translate(512, 280)">
+    <!-- Grande étoile en haut à gauche -->
+    <path d="M -140,-60 L -148,-28 L -180,-20 L -148,-12 L -140,20 L -132,-12 L -100,-20 L -132,-28 Z" 
+          fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Grande étoile en haut à droite -->
+    <path d="M 140,-60 L 132,-28 L 100,-20 L 132,-12 L 140,20 L 148,-12 L 180,-20 L 148,-28 Z" 
+          fill="#FFFFFF" opacity="0.95"/>
+  </g>
+  
+  <g transform="translate(512, 744)">
+    <!-- Grande étoile en bas à gauche -->
+    <path d="M -140,-20 L -148,12 L -180,20 L -148,28 L -140,60 L -132,28 L -100,20 L -132,12 Z" 
+          fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Grande étoile en bas à droite -->
+    <path d="M 140,-20 L 132,12 L 100,20 L 132,28 L 140,60 L 148,28 L 180,20 L 148,12 Z" 
+          fill="#FFFFFF" opacity="0.95"/>
+  </g>
+  
+  <!-- Petites étoiles supplémentaires pour le côté magique -->
+  <g transform="translate(512, 512)">
+    <!-- Petite étoile gauche milieu -->
+    <path d="M -200,0 L -195,8 L -185,10 L -195,12 L -200,20 L -205,12 L -215,10 L -205,8 Z" 
+          fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- Petite étoile droite milieu -->
+    <path d="M 200,0 L 195,8 L 185,10 L 195,12 L 200,20 L 205,12 L 215,10 L 205,8 Z" 
+          fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- Micro étoile haut -->
+    <path d="M 0,-260 L -3,-250 L -12,-247 L -3,-244 L 0,-234 L 3,-244 L 12,-247 L 3,-250 Z" 
+          fill="#FFFFFF" opacity="0.7"/>
+    
+    <!-- Micro étoile bas -->
+    <path d="M 0,260 L -3,250 L -12,247 L -3,244 L 0,234 L 3,244 L 12,247 L 3,250 Z" 
+          fill="#FFFFFF" opacity="0.7"/>
+  </g>

@@ -5,7 +5,12 @@ export default function ThemeSelector() {
   const { config, updateTheme } = useConfigStore();
 
   const handleThemeSelect = (themeData) => {
-    updateTheme(themeData.theme);
+    // Include theme id in the theme object for CSS targeting
+    const themeWithId = {
+      ...themeData.theme,
+      id: themeData.themeId || themeData.id,
+    };
+    updateTheme(themeWithId);
   };
 
   return (

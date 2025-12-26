@@ -1,5 +1,7 @@
 // Configuration Loader
-// This file loads the configuration from config.json
+// This file loads the configuration from Supabase (production) or config.json (fallback)
+
+import { supabase } from '../lib/supabase.js';
 
 let config = null;
 
@@ -40,7 +42,25 @@ export function injectThemeColors(theme) {
   if (theme.backgroundColor) {
     root.style.setProperty("--color-background", theme.backgroundColor);
     // Apply background to body immediately
-    body.style.backgroundColor = theme.backgroundColor;
+    // For neo-brutalist, use gradient if available
+    if (theme.customColors?.backgroundGradient) {
+      body.style.background = theme.customColors.backgroundGradient;
+      body.style.backgroundAttachment = 'fixed';
+    } else {
+      body.style.backgroundColor = theme.backgroundColor;
+    }
+  }
+  
+  // Set theme identifier for CSS targeting
+  if (theme.id) {
+    root.setAttribute('data-theme', theme.id);
+  } else {
+    // Try to detect theme from colors
+    if (theme.primaryColor === '#000000' && theme.secondaryColor === '#ffff00') {
+      root.setAttribute('data-theme', 'neo-brutalist');
+    } else if (theme.backgroundColor === '#0a0a0a' && theme.primaryColor === '#ffffff') {
+      root.setAttribute('data-theme', 'teenage-engineering');
+    }
   }
 
   if (theme.textColor) {
@@ -85,23 +105,53 @@ export function injectThemeColors(theme) {
   console.log("✅ Theme colors and typography injected into CSS variables");
 }
 
-export async function loadConfig() {
-  if (config) return config;
+// Extract slug from URL
+function getSlugFromUrl() {
+  const path = window.location.pathname;
+  // Remove leading/trailing slashes and get slug
+  const slug = path.replace(/^\/|\/$/g, '').split('/')[0];
+  return slug || null;
+}
 
-  // Retry logic: try up to 3 times with increasing delays
+// Load config from Supabase by slug
+async function loadConfigFromSupabase(slug) {
+  try {
+    console.log(`🔄 Loading config from Supabase for slug: ${slug}`);
+    
+    const { data, error } = await supabase
+      .from('projects')
+      .select('config')
+      .eq('slug', slug)
+      .eq('status', 'active')
+      .single();
+
+    if (error) throw error;
+    if (!data || !data.config) {
+      throw new Error('Config not found for this slug');
+    }
+
+    console.log('✅ Config loaded from Supabase');
+    return data.config;
+  } catch (error) {
+    console.error('❌ Error loading from Supabase:', error);
+    throw error;
+  }
+}
+
+// Fallback: Load config from config.json
+async function loadConfigFromFile() {
   const maxRetries = 3;
   let lastError = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`🔄 Fetching config.json (attempt ${attempt}/${maxRetries}) from:`, window.location.origin);
+      console.log(`🔄 Fetching config.json (attempt ${attempt}/${maxRetries})`);
       
-      // Create timeout abort controller for 5 second timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
       
       const response = await fetch("/config.json", {
-        cache: "no-cache", // Always fetch fresh config
+        cache: "no-cache",
         signal: controller.signal,
       });
       
@@ -111,33 +161,54 @@ export async function loadConfig() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      config = await response.json();
-      console.log("✅ Config loaded successfully");
-
-      // Inject theme colors immediately
-      if (config.theme) {
-        injectThemeColors(config.theme);
-      }
-
-      return config;
+      const configData = await response.json();
+      console.log("✅ Config loaded from config.json");
+      return configData;
     } catch (error) {
       lastError = error;
       console.warn(`⚠️ Attempt ${attempt} failed:`, error.message);
       
-      // If not the last attempt, wait before retrying
       if (attempt < maxRetries) {
-        const delay = attempt * 500; // 500ms, 1000ms, 1500ms
-        console.log(`⏳ Retrying in ${delay}ms...`);
+        const delay = attempt * 500;
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
   }
 
-  // All retries failed
-  console.error("❌ Failed to load config after all retries:", lastError);
-  console.error("📍 Current origin:", window.location.origin);
-  console.error("📍 Attempted URL:", `${window.location.origin}/config.json`);
-  throw new Error(`Configuration file not found after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}`);
+  throw new Error(`Failed to load config.json after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}`);
+}
+
+export async function loadConfig() {
+  if (config) return config;
+
+  try {
+    // Try to get slug from URL
+    const slug = getSlugFromUrl();
+    
+    // If we have a slug and Supabase is configured, try loading from Supabase
+    if (slug && import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      try {
+        config = await loadConfigFromSupabase(slug);
+      } catch (supabaseError) {
+        console.warn('⚠️ Failed to load from Supabase, falling back to config.json:', supabaseError);
+        config = await loadConfigFromFile();
+      }
+    } else {
+      // No slug or Supabase not configured, use file fallback
+      console.log('📄 Using config.json (no slug in URL or Supabase not configured)');
+      config = await loadConfigFromFile();
+    }
+
+    // Inject theme colors immediately
+    if (config.theme) {
+      injectThemeColors(config.theme);
+    }
+
+    return config;
+  } catch (error) {
+    console.error("❌ Failed to load config:", error);
+    throw error;
+  }
 }
 
 export function getConfig() {
@@ -199,4 +270,7 @@ export function updateConfigAndTheme(newConfig) {
     injectThemeColors(config.theme);
   }
   console.log("🔄 Config updated via postMessage, theme re-injected.");
+  
+  // Trigger config update event to reinitialize constants
+  window.dispatchEvent(new CustomEvent('configUpdated', { detail: newConfig }));
 }

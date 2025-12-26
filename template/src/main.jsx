@@ -5,6 +5,7 @@ import './design/tokens.css';
 import './index.css';
 import App from './App.jsx';
 import { setupHotReload } from './config/hotReload.js';
+import { initializeConstants } from './app/constants/index.js';
 
 // Setup hot reload for admin panel
 setupHotReload();
@@ -141,6 +142,15 @@ if (typeof window !== 'undefined') {
       console.log('📥 Received config update from parent:', event.data.config);
       updateConfigAndTheme(event.data.config);
     }
+  });
+  
+  // Listen for config updates and reinitialize constants
+  window.addEventListener('configUpdated', () => {
+    // Reinitialize constants when config is updated
+    initializeConstants();
+    console.log('✅ Constants reinitialized after config update');
+    // Force React to re-render by dispatching a custom event
+    window.dispatchEvent(new CustomEvent('forceRerender'));
   });
 }
 

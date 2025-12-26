@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ensureTangerineNamespace } from "./lib/registry.js";
 
 // Config System
-import { loadConfig } from "./config/loader.js";
+import { loadConfig, getBrand, getContact } from "./config/loader.js";
 import { initializeProducts } from "./app/data/products.js";
 import { initializeConstants } from "./app/constants/index.js";
 
@@ -139,6 +139,25 @@ const App = () => {
     }
 
     initializeApp();
+    
+    // Listen for config updates from admin panel
+    const handleConfigUpdate = () => {
+      console.log("🔄 Config updated, reinitializing...");
+      initializeConstants();
+      initializeProducts();
+    };
+    
+    window.addEventListener('configUpdated', handleConfigUpdate);
+    window.addEventListener('forceRerender', () => {
+      // Force re-render by updating a state
+      setConfigLoaded(false);
+      setTimeout(() => setConfigLoaded(true), 100);
+    });
+    
+    return () => {
+      window.removeEventListener('configUpdated', handleConfigUpdate);
+      window.removeEventListener('forceRerender', () => {});
+    };
   }, []);
 
   const productsToDisplay = useMemo(() => {
@@ -490,8 +509,14 @@ const App = () => {
     const newOrderHistory = [order, ...orderHistory];
     setOrderHistory(newOrderHistory);
 
-    const telegramURL = `https://t.me/Tangerine_212?text=${encodeURIComponent(
-      `🎉 NOUVELLE COMMANDE TANGERINE\n\n${message}\n\n📦 Sous-total: ${subtotal}€${promoText}\n🚚 Livraison ${DELIVERY_PRICES[deliveryCity]?.name || deliveryCity}: ${deliveryPrice === 0 ? "GRATUIT" : `${deliveryPrice}€`}\n💳 Paiement: ${paymentText}\n\n💰 TOTAL: ${total}€`,
+    // Get brand name and Telegram contact from config
+    const brand = getBrand();
+    const contact = getContact();
+    const brandName = brand?.name || "My Shop";
+    const telegramUsername = contact?.telegram?.replace('@', '') || 'yourusername';
+
+    const telegramURL = `https://t.me/${telegramUsername}?text=${encodeURIComponent(
+      `🎉 NOUVELLE COMMANDE ${brandName.toUpperCase()}\n\n${message}\n\n📦 Sous-total: ${subtotal}€${promoText}\n🚚 Livraison ${DELIVERY_PRICES[deliveryCity]?.name || deliveryCity}: ${deliveryPrice === 0 ? "GRATUIT" : `${deliveryPrice}€`}\n💳 Paiement: ${paymentText}\n\n💰 TOTAL: ${total}€`,
     )}`;
 
     trackEvent("order_confirmed", {

@@ -120,7 +120,7 @@ export const MainLayout = ({
                 <div className="max-w-7xl mx-auto px-4 pt-4">
                     <div className="glass-dark border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-3">
                         <div>
-                            <p className="text-white font-semibold text-sm">📱 Ajouter Tangerine à l’écran d’accueil</p>
+                            <p className="text-white font-semibold text-sm">📱 Ajouter à l'écran d'accueil</p>
                             <p className="text-white/60 text-xs">
                                 Accès direct depuis Telegram. Statut : {homeScreenStatus}
                             </p>

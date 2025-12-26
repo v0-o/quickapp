@@ -3,8 +3,8 @@ import { useConfigStore } from '../store/configStore.js';
 export default function ContactEditor() {
   const { config, updateConfig } = useConfigStore();
 
-  const contact = config?.contact || {};
-  const social = config?.social || {};
+  const contact = config?.contact || { email: '', phone: '', whatsapp: '' };
+  const social = config?.social || { instagram: '' };
 
   const handleContactChange = (key, value) => {
     updateConfig({

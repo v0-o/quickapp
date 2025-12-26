@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap");
+/* Google Fonts are now loaded in index.html for better performance */
 
 @tailwind base;
 @tailwind components;
@@ -222,6 +222,103 @@ body {
         box-shadow 0.24s ease,
         filter 0.24s ease,
         background 0.3s ease;
+}
+
+/* Neo-Brutalist Theme Styles */
+/* Only apply brutalist style to CTA buttons, not all glass-cta */
+[data-theme="neo-brutalist"] button.glass-cta,
+html[data-theme="neo-brutalist"] button.glass-cta {
+    background: var(--color-primary, #000000) !important;
+    border: 4px solid var(--color-secondary, #ffff00) !important;
+    border-radius: 0 !important;
+    box-shadow: 
+        8px 8px 0 var(--color-secondary, #ffff00) !important;
+    color: var(--color-secondary, #ffff00) !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+[data-theme="neo-brutalist"] button.glass-cta:hover,
+html[data-theme="neo-brutalist"] button.glass-cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 
+        10px 10px 0 var(--color-secondary, #ffff00) !important;
+}
+
+[data-theme="neo-brutalist"] button.glass-cta:active,
+html[data-theme="neo-brutalist"] button.glass-cta:active {
+    transform: translate(2px, 2px);
+    box-shadow: 
+        4px 4px 0 var(--color-secondary, #ffff00) !important;
+}
+
+/* Neo-Brutalist Cart Button in Bottom Nav - Keep normal style */
+[data-theme="neo-brutalist"] .bottom-nav button[style*="gradient"],
+html[data-theme="neo-brutalist"] .bottom-nav button[style*="gradient"] {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Neo-Brutalist Cart Drawer - Keep normal style */
+[data-theme="neo-brutalist"] .glass-dark,
+html[data-theme="neo-brutalist"] .glass-dark {
+    background: var(--color-background, #ffffff) !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Neo-Brutalist "Voir détail" button - Keep normal style */
+[data-theme="neo-brutalist"] button.glass:not(.glass-cta),
+html[data-theme="neo-brutalist"] button.glass:not(.glass-cta) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid var(--color-primary, #000000) !important;
+    border-radius: 0 !important;
+}
+
+/* Teenage Engineering Theme Styles */
+[data-theme="teenage-engineering"] .glass-cta,
+html[data-theme="teenage-engineering"] .glass-cta {
+    background: var(--color-background, #0a0a0a) !important;
+    border: 1px solid var(--color-primary, #ffffff) !important;
+    border-radius: 2px !important;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+    color: var(--color-primary, #ffffff) !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.05em;
+}
+
+[data-theme="teenage-engineering"] .glass-cta:hover,
+html[data-theme="teenage-engineering"] .glass-cta:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--color-secondary, #e5e5e5) !important;
+}
+
+/* Teenage Engineering Cart Button */
+[data-theme="teenage-engineering"] .bottom-nav button[style*="gradient"],
+html[data-theme="teenage-engineering"] .bottom-nav button[style*="gradient"] {
+    background: var(--color-background, #0a0a0a) !important;
+    border: 1px solid var(--color-primary, #ffffff) !important;
+    border-radius: 2px !important;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Teenage Engineering Cart Drawer */
+[data-theme="teenage-engineering"] .glass-dark,
+html[data-theme="teenage-engineering"] .glass-dark {
+    background: var(--color-background, #0a0a0a) !important;
+    border-left: 1px solid var(--color-primary, #ffffff) !important;
+    border-top: 1px solid var(--color-primary, #ffffff) !important;
+    border-bottom: 1px solid var(--color-primary, #ffffff) !important;
+    box-shadow: 
+        -2px 0 8px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
 }
 
 .glass-cta:hover {
